@@ -95,7 +95,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
   const [activeTab, setActiveTab] = useState<'general' | 'projects' | 'achievements'>('general');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [dateFilter, setDateFilter] = useState<DateFilterType>('7days');
-  
+   
   // Settings Modal State
   const [showSettings, setShowSettings] = useState(false);
   const [tempSettings, setTempSettings] = useState<UserSettings>(settings);
@@ -163,15 +163,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
   const projectFilteredSessions = selectedProjectId 
     ? sessions.filter(s => s.projectId === selectedProjectId)
     : sessions;
-  
+   
   const filteredSessions = filterSessionsByDate(projectFilteredSessions, dateFilter);
 
   // --- Statistics Logic ---
   const sortedSessions = [...filteredSessions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  
+   
   // Group data for Stacked Bar Chart
   const dateMap = new Map<string, any>();
-  
+   
   sortedSessions.forEach(s => {
     const dateStr = new Date(s.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
     const existing = dateMap.get(dateStr) || { date: dateStr };
@@ -633,9 +633,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
                <div 
                  key={trophy.id} 
                  className={`relative overflow-hidden rounded-2xl p-6 flex flex-col items-center text-center transition-all duration-300 border ${
-                    unlocked 
-                      ? 'bg-white border-transparent shadow-lg shadow-slate-200 scale-100' 
-                      : 'bg-slate-50 border-slate-200 opacity-60 grayscale hover:opacity-80 hover:scale-105 cursor-help'
+                   unlocked 
+                     ? 'bg-white border-transparent shadow-lg shadow-slate-200 scale-100' 
+                     : 'bg-slate-50 border-slate-200 opacity-60 grayscale hover:opacity-80 hover:scale-105 cursor-help'
                  }`}
                >
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${unlocked ? trophy.color : 'bg-slate-200 text-slate-400'}`}>
@@ -689,7 +689,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
              <div className="flex items-center gap-4">
                <div className="relative group">
                  <div className="absolute inset-0 bg-teal-400 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                 <img src="logo.png" alt="Logo Projeto Parnaso" className="relative w-20 h-20 object-contain drop-shadow-md transform transition-transform group-hover:scale-105" />
+                 {/* AQUI ESTAVA O PROBLEMA: Adicionei a barra '/' antes do nome do arquivo */}
+                 <img src="/logo.png" alt="Logo Projeto Parnaso" className="relative w-20 h-20 object-contain drop-shadow-md transform transition-transform group-hover:scale-105" />
                </div>
                <div>
                  <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Projeto Parnaso</h1>
@@ -800,20 +801,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
       {activeTab === 'projects' && !selectedProjectId && (
         <div>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* New Project Button */}
-              {!readOnly && (
-                <button 
-                  onClick={() => setShowNewProject(true)}
-                  className="flex flex-col items-center justify-center h-48 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 hover:border-teal-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
-                >
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                   </svg>
-                   <span className="font-medium">Criar Nova Obra</span>
-                </button>
-              )}
+             {/* New Project Button */}
+             {!readOnly && (
+               <button 
+                 onClick={() => setShowNewProject(true)}
+                 className="flex flex-col items-center justify-center h-48 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 hover:border-teal-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+               >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="font-medium">Criar Nova Obra</span>
+               </button>
+             )}
 
-              {projects.map(project => {
+             {projects.map(project => {
                  const projWords = sessions.filter(s => s.projectId === project.id).reduce((a,b) => a + b.wordCount, 0);
                  const percent = project.targetWordCount ? Math.min(100, Math.round((projWords / project.targetWordCount) * 100)) : 0;
                  return (
@@ -839,7 +840,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, sessions, projects, 
                      </div>
                   </div>
                  )
-              })}
+             })}
            </div>
         </div>
       )}
